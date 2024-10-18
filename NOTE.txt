@@ -1,0 +1,8 @@
+# npx
+    * Node Package eXecute. It's a package runner that allows developers to run JavaScript packages from the NPM registry without installing them.
+
+# hardhat
+    * is a development environment/framework for Ethereum software. It consists of different components for editing, compiling, debugging and deploying your smart contracts and dApps
+
+# waffle
+    * a library for writing and testing smart contracts
