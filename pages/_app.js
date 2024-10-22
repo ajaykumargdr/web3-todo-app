@@ -1,5 +1,21 @@
 import "@/styles/globals.css";
 
-export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+// INTERNAL IMPORT
+import { ToDoListProvider } from "@/context/ToDolistApp";
+// require("dotenv").config();
+
+const App = ({ Component, pageProps }) => {
+
+  return (
+    <ToDoListProvider>
+
+      <div>
+        <Component {...pageProps} />;
+      </div>
+
+    </ToDoListProvider>
+  )
+
 }
+
+export default App;
