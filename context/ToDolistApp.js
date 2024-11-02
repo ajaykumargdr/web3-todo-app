@@ -20,7 +20,6 @@ export const ToDoListProvider = ({ children }) => {
     const [error, setError] = useState("");
     const [allToDoList, setAllToDoList] = useState([]);
     const [myList, setMyList] = useState([]);
-
     const [allAddress, setAllAddress] = useState([]);
 
     //------ CONNECTING METAMASK
@@ -29,14 +28,14 @@ export const ToDoListProvider = ({ children }) => {
 
         const accounts = await window.ethereum.request({ method: "eth_accounts" });
 
-        console.log(accounts);
+        // console.log(accounts);
 
         if (accounts.length) {
             setCurrentAccount(accounts[0]);
-            // console.log("current account:" + accounts[0])
+            // console.log("current account:" + accounts[0]) 
         } else {
             setError("Please connect the app to metamask!");
-            console.log("metamask disconnected!")
+            console.log("metamask disconnected!");
         }
     };
 
@@ -44,33 +43,107 @@ export const ToDoListProvider = ({ children }) => {
     const connectWallet = async () => {
         if (!window.ethereum) return setError("please install metamask");
 
-        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-        setCurrentAccount(accounts[0]);
-        window.location.reload(false);
+        try {
+            await window.ethereum.request({
+                method: "wallet_requestPermissions", params: [
+                    {
+                        eth_accounts: {}
+                    }
+                ]
+            });
+
+            const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+            setCurrentAccount(accounts[0]);
+            window.location.reload(false);
+
+        } catch (e) {
+            setError("not able to connect to the account:" + e);
+            return;
+        }
+    }
+
+    const getContract = async () => {
+        // CONNECTING WITH SMART CONTRACT
+        const w3provider = await new Web3Modal().connect();
+        const provider = new ethers.BrowserProvider(w3provider);
+
+        const signer = await provider.getSigner();
+        // console.log("signer:" + signer.address);
+
+        return fetchContract(signer);
     }
 
     // INTERACTING WITH SMART CONTRACT
     const toDoList = async (message) => {
 
         try {
-            // CONNECTING WITH SMART CONTRACT
-            const w3provider = await new Web3Modal().connect();
-            const provider = new ethers.BrowserProvider(w3provider);
+            const contract = await getContract();
+            const transactionResponse = await contract.createList(message);
 
-            const signer = await provider.getSigner();
-            console.log("signer:" + signer.address);
-
-            const contract = fetchContract(signer);
-
-            console.log(contract);
+            console.log("waiting");
+            transactionResponse.wait();  // TransactionResponse.wait() which waits until the block to be mined
+            console.log("todo list added!");
+            console.log(transactionResponse);
         } catch (error) {
-            setError("something wrong with creating list:" + error);
+            setError("something wrong with creating list: " + error);
         }
 
     }
 
+    const getToDoList = async () => {
+        try {
+            const contract = await getContract();
+
+            // GET ALL MESSAGES
+            const allMessage = await contract.getMessage();
+            // console.log(allMessage);
+            setMyList(allMessage);
+
+            // GET DATA
+            const allCreatorAddress = await contract.getAddress();
+            setAllAddress(allCreatorAddress);
+
+            // console.log(allCreatorAddress);
+
+            allCreatorAddress.map(async (ele) => {
+                const creatorData = await contract.getCreatorData(ele);
+                allToDoList.push(getToDoList);
+                console.log(getSingleData);
+            });
+
+            console.log(allCreatorAddress);
+
+        } catch (error) {
+            setError("something went wrong in getting todo list:" + error);
+        }
+    }
+
+    // CHANGE STATE OF TODO-LIST MESSAGE
+    const change = async (address) => {
+        try {
+            const contract = await getContract();
+            const state = await contract.toggle(address);
+            state.wait();
+            console.log(state)
+
+        } catch (error) {
+            setError("something went wrong in getting toggling message:" + error);
+        }
+    }
+
     return (
-        <ToDoListContext.Provider value={{ checkIfWalletIsConnect, connectWallet, toDoList, error }}>
+        <ToDoListContext.Provider value={{
+            checkIfWalletIsConnect,
+            connectWallet,
+            getToDoList,
+            toDoList,
+            change,
+            currentAccount,
+            error,
+            allToDoList,
+            myList,
+            allAddress
+        }}>
             {children}
         </ToDoListContext.Provider>
     )
