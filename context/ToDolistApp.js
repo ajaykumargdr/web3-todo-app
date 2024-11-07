@@ -1,6 +1,5 @@
 // import { useState } from "react";
 import { useState, createContext, useEffect } from 'react';
-import Web3Modal from 'web3modal';
 import { ethers } from 'ethers';
 
 // INTERNAL IMPORT
@@ -64,11 +63,9 @@ export const ToDoListProvider = ({ children }) => {
 
     const getContract = async () => {
         // CONNECTING WITH SMART CONTRACT
-        const w3provider = await new Web3Modal().connect();
-        const provider = new ethers.BrowserProvider(w3provider);
-
+        const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
-        // console.log("signer:" + signer.address);
+        console.log("signer:" + signer.address);
 
         return fetchContract(signer);
     }
@@ -79,8 +76,6 @@ export const ToDoListProvider = ({ children }) => {
         try {
             const contract = await getContract();
             const transactionResponse = await contract.createList(message);
-
-            console.log("waiting");
             transactionResponse.wait();  // TransactionResponse.wait() which waits until the block to be mined
             console.log("todo list added!");
             console.log(transactionResponse);
@@ -96,25 +91,23 @@ export const ToDoListProvider = ({ children }) => {
 
             // GET ALL MESSAGES
             const allMessage = await contract.getMessage();
-            // console.log(allMessage);
+            console.log(allMessage);
             setMyList(allMessage);
 
             // GET DATA
-            const allCreatorAddress = await contract.getAddress();
+            const allCreatorAddress = await contract.getFunction("getAddress")();
             setAllAddress(allCreatorAddress);
-
-            // console.log(allCreatorAddress);
+            console.log(allCreatorAddress);
 
             allCreatorAddress.map(async (ele) => {
                 const creatorData = await contract.getCreatorData(ele);
-                allToDoList.push(getToDoList);
-                console.log(getSingleData);
+                allToDoList.push(creatorData);
+                console.log(creatorData);
             });
 
             console.log(allCreatorAddress);
-
         } catch (error) {
-            setError("something went wrong in getting todo list:" + error);
+            setError(Date.now() + " getToDoList:" + error);
         }
     }
 
