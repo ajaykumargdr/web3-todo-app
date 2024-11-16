@@ -1,7 +1,7 @@
 import { MdVerified } from "react-icons/md";
 import React, { userState, useEffect, useContext, useState } from 'react';
 import { RiSendPlaneFill, RiCloseFill } from "react-icons/ri";
-import { AiFillLock, AiFillUnlock } from "react-icons/ai";
+import { TiRefreshOutline } from "react-icons/ti";
 import Image from 'next/image';
 
 import { ToDoListContext } from '@/context/ToDolistApp';
@@ -30,14 +30,14 @@ const Home = () => {
   // any state change or page reload triggers the rerender
   useEffect(() => {
     checkIfWalletIsConnect();
-    getToDoList()
+    getToDoList();
   }, []);
 
   return (
     <div className={Style.home}>
 
       {/* ################# NavBar ################# */}
-      <div className={Style.navBar} style={{ border: "2px dashed green" }}>
+      <div className={Style.navBar}>
         <Image src={Loading} alt="Logo" width={50} height={50} />
 
         <div className={Style.connect}>
@@ -45,7 +45,9 @@ const Home = () => {
             !currentAccount ? (
               <button onClick={() => connectWallet()}>Connect Wallet</button>
             ) : (
-              <p> {currentAccount.slice(0, 20)}...</p>
+              <button onClick={() => connectWallet()}>
+                {currentAccount.slice(0, 20)}..
+              </button>
             )
           }
         </div>
@@ -56,56 +58,62 @@ const Home = () => {
       <div className={Style.home_box}>
 
         {/* ################# Completed List ################# */}
-        <div className={Style.home_completed} >
+        <div className={Style.home_completed}>
 
           {/* ################# Showing List ################# */}
-          <div style={{ border: "2px dashed red" }} >
-            <h2>ToDo History List</h2>
+          <div>
+            <h2>ToDo History List <TiRefreshOutline onClick={() => getToDoList()} /> </h2>
 
-            {myList.map((el, i) => (
+            {myList.map((el) => (
 
               <div className={Style.home_completed_list}>
                 <MdVerified className={Style.iconColor} />
-                <h3> {i + 1}. {el.slice(0, 30)}...</h3>
+                <h3>{el.slice(0, 30)}</h3>
               </div>
 
             ))}
 
           </div>
 
-          {/* ################# Create Todo ################# */}
-          <div className={Style.home_created}>
-            <div className={Style.home_created_box}>
+        </div>
 
-              {/* ################# Input ################# */}
-              <div className={Style.home_create_input} style={{ border: "2px dashed yellow" }} >
-                <h2>Create BlockChain ToDo List</h2>
+        {/* ################# Create Todo ################# */}
+        <div className={Style.home_create}>
+          <div className={Style.home_create_box}>
 
-                <input
-                  type='Text'
-                  placeholder='Enter your todo'
-                  onChange={(e) => setMessage(e.target.value)}
-                />
+            {/* ################# Input ################# */}
+            <h2>Create BlockChain ToDo List</h2>
 
-                {
-                  currentAccount ? (
-                    <RiSendPlaneFill className={Style.iconBlack} onClick={() => toDoList(message)} /> // *******
-                  ) : (
-                    <RiSendPlaneFill className={Style.iconBlack} onClick={() => connectWallet()} />
-                  )}
-              </div>
+            <div className={Style.home_create_input}>
 
-               {/* ################# Data ################# */}
-              <Data
-                allToDoList={allToDoList}
-                allAddress={allAddress}
-                myList={myList}
+              <input
+                type='Text'
+                placeholder='Enter your todo'
+                onChange={(e) => setMessage(e.target.value)}
               />
 
+              {
+                currentAccount ? (
+                  <RiSendPlaneFill
+                    className={Style.iconBlack}
+                    onClick={() => toDoList(message)}
+                  />
+                ) : (
+                  <RiSendPlaneFill className={Style.iconBlack} onClick={() => connectWallet()} />
+                )}
             </div>
-          </div>
 
+            {/* ################# Data ################# */}
+            <Data
+              allToDoList={allToDoList}
+              allAddress={allAddress}
+              myList={myList}
+              change={change}
+            />
+
+          </div>
         </div>
+
       </div>
 
     </div>
