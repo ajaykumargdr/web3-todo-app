@@ -1,5 +1,6 @@
 import React from 'react'
-import { RiCloseFill } from "react-icons/ri";
+import { CiCircleCheck } from "react-icons/ci";
+import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import { AiFillLock } from "react-icons/ai";
 import Style from '@/styles/index.module.css';
 
@@ -24,9 +25,9 @@ const Data = ({ allToDoList, allAddress, myList, change }) => {
 
                                     {
                                         el[3] == false ? (
-                                            <RiCloseFill onClick={() => change(el[0])} className={Style.icon_close} />
+                                            <CiCircleCheck onClick={() => change(el[0])} className={Style.icon_close} />
                                         ) : (
-                                            <p className={Style.down}>Down</p>
+                                            <IoCheckmarkDoneCircle onClick={() => change(el[0])} className={Style.icon_close} />
                                         )
                                     }
 
