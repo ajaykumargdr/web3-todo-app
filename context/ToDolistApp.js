@@ -107,6 +107,7 @@ export const ToDoListProvider = ({ children }) => {
             // GET DATA
             const allCreatorAddress = await contract.getFunction("getAddress")();
             setAllAddress(allCreatorAddress);
+            setAllToDoList([]);
 
             allCreatorAddress.map(async (ele) => {
                 const creatorData = await contract.getCreatorData(ele);
@@ -124,6 +125,7 @@ export const ToDoListProvider = ({ children }) => {
             const state = await contract.toggle(address);
             state.wait();
             console.log(state)
+            window.location.reload();
 
         } catch (error) {
             setError("something went wrong in getting toggling message:" + error);
