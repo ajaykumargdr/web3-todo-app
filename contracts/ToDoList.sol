@@ -1,89 +1,70 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.27;
 
-contract ToDoList {
-    // used to create the user id
-    uint256 public _idUser;
+import "hardhat/console.sol";
 
-    // stores the owner who deploys the contract
-    address public ownerofContract;
-
+contract ToDoListApp {
     // stores the addresses of users who creates todolist on this Dapp
     address[] public creators;
 
-    // all the messages are stores ?
-    string[] public messages;
-
-    // stores all message ids
-    uint256[] public messageId;
-
-    //
-    struct ToDoListApp {
+    struct ToDoUser {
         address account;
         uint256 userId;
-        string message;
-        bool completed;
+        string[] messages;
+        bool[] completed;
     }
 
-    event ToDoEvent(
-        address indexed account,
-        uint256 indexed userId,
-        string message,
-        bool completed
-    );
+    event ToDoEvent(address indexed account, string message, bool completed);
+    event Toggled(address indexed account, string message, bool completed);
 
-    mapping(address => ToDoListApp) public toDoListApps;
+    mapping(address => ToDoUser) public toDoUsers;
 
-    constructor() {
-        ownerofContract = msg.sender;
-    }
+    function createList(string calldata _message) public {
+        ToDoUser storage toDo = toDoUsers[msg.sender];
 
-    function inc() internal {
-        _idUser++;
-    }
+        if (toDo.account == address(0)) {
+            creators.push(msg.sender);
+            toDo.account = msg.sender;
+        }
 
-    function createList(string calldata _message) external {
-        inc();
+        toDo.messages.push(_message);
+        toDo.completed.push(false);
 
-        uint256 idNumber = _idUser;
-
-        ToDoListApp storage toDo = toDoListApps[msg.sender];
-
-        toDo.account = msg.sender;
-        toDo.message = _message;
-        toDo.completed = false;
-        toDo.userId = idNumber;
-
-        creators.push(msg.sender);
-        messages.push(_message);
-        messageId.push(idNumber);
-
-        emit ToDoEvent(msg.sender, toDo.userId, _message, false);
+        emit ToDoEvent(msg.sender, _message, false);
     }
 
     function getCreatorData(
         address _address
-    ) public view returns (address, uint256, string memory, bool) {
-        ToDoListApp memory singleUserData = toDoListApps[_address];
+    ) public view returns (address, uint256, string[] memory, bool[] memory) {
+        ToDoUser memory singleUserData = toDoUsers[_address];
 
         return (
             singleUserData.account,
             singleUserData.userId,
-            singleUserData.message,
+            singleUserData.messages,
             singleUserData.completed
         );
     }
 
-    function getAddress() external view returns(address[] memory){
+    function getAllUsers() public view returns (address[] memory) {
         return creators;
     }
 
-    function getMessage() external view returns(string[] memory){
-        return messages;
-    }
+    function toggle(address creator, uint256 messageIndex) public {
+        if (creator != msg.sender) {
+            revert("sender is not the owner of message");
+        }
 
-    function toggle(address _creator) public{
-        ToDoListApp storage singleUserData = toDoListApps[_creator];
-        singleUserData.completed = !singleUserData.completed;
+        ToDoUser storage singleUserData = toDoUsers[creator];
+
+        if (messageIndex >= singleUserData.messages.length) {
+            revert("message index out of bound");
+        }
+
+        bool state = singleUserData.completed[messageIndex];
+
+        singleUserData.completed[messageIndex] = !state;
+
+        emit Toggled(creator, singleUserData.messages[messageIndex], !state);
     }
 }
