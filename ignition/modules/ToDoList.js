@@ -4,7 +4,7 @@
 const { buildModule } = require("@nomicfoundation/hardhat-ignition/modules");
 
 module.exports = buildModule("ToDoListModule", (m) => {
-  const toDoList = m.contract("ToDoList", [], {});
+  const toDoList = m.contract("ToDoListApp", [], {});
   return { toDoList };
 });
 
