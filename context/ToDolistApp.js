@@ -27,13 +27,14 @@ export const ToDoListProvider = ({ children }) => {
             setError("please install metamask");
             return false;
         }
+        try {
 
-        const accounts = await window.ethereum.request({ method: "eth_accounts" });
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+            setCurrentAccount(signer.address);
+            return signer.address;
 
-        if (accounts.length) {
-            setCurrentAccount(accounts[0]);
-            return true;
-        } else {
+        } catch {
             setError("Please connect the app to metamask!");
             console.log("metamask is not connected!");
             return false;
@@ -74,7 +75,6 @@ export const ToDoListProvider = ({ children }) => {
         // CONNECTING WITH SMART CONTRACT
         const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
-        console.log("signer:" + signer.address);
 
         return fetchContract(signer);
     }
@@ -86,32 +86,30 @@ export const ToDoListProvider = ({ children }) => {
             const contract = await getContract();
             const transactionResponse = await contract.createList(message);
             transactionResponse.wait();  // TransactionResponse.wait() which waits until the block to be mined
-            console.log("todo list added!");
-            console.log(transactionResponse);
-            getToDoList();
+            getToDoList(currentAccount);
         } catch (error) {
             setError("something wrong with creating list: " + error);
         }
 
     }
 
-    const getToDoList = async () => {
+    const getToDoList = async (currentAccount) => {
         try {
             const contract = await getContract();
 
-            // GET ALL MESSAGES
-            const allMessage = await contract.getMessage();
-            // console.log(allMessage);
-            setMyList(allMessage);
-
             // GET DATA
-            const allCreatorAddress = await contract.getFunction("getAddress")();
+            const allCreatorAddress = await contract.getAllUsers();
             setAllAddress(allCreatorAddress);
+            setMyList([]);
             setAllToDoList([]);
 
             allCreatorAddress.map(async (ele) => {
                 const creatorData = await contract.getCreatorData(ele);
                 setAllToDoList(allToDoList => [...allToDoList, creatorData]);
+
+                if (creatorData[0] == currentAccount) {
+                    setMyList(creatorData[2]);
+                }
             });
         } catch (error) {
             setError(Date.now() + " getToDoList:" + error);
@@ -119,10 +117,11 @@ export const ToDoListProvider = ({ children }) => {
     }
 
     // CHANGE STATE OF TODO-LIST MESSAGE
-    const change = async (address) => {
+    const change = async (address, messageIndex) => {
         try {
             const contract = await getContract();
-            const state = await contract.toggle(address);
+            console.log("toggling:", address, messageIndex);
+            const state = await contract.toggle(address, messageIndex);
             state.wait();
             console.log(state)
             window.location.reload();

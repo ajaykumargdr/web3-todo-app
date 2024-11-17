@@ -28,8 +28,10 @@ const Home = () => {
   // runs every time the below react code rerenders
   // any state change or page reload triggers the rerender
   useEffect(() => {
-    checkIfWalletIsConnect().then((isConnected) => isConnected ?
-      getToDoList() : {}
+    checkIfWalletIsConnect().then((currentAccount) => {
+      currentAccount ?
+        getToDoList(currentAccount) : {}
+    }
     );
   }, []);
 
@@ -64,13 +66,11 @@ const Home = () => {
           <div>
             <h2>ToDo History List</h2>
 
-            {myList.map((el) => (
-
-              <div className={Style.home_completed_list}>
+            {myList.map((el, i) => (
+              <div key={i} className={Style.home_completed_list}>
                 <MdVerified className={Style.iconColor} />
-                <h3>{el.slice(0, 30)}</h3>
+                <h3>{el}</h3>
               </div>
-
             ))}
 
           </div>
@@ -106,8 +106,7 @@ const Home = () => {
             {/* ################# Data ################# */}
             <Data
               allToDoList={allToDoList}
-              allAddress={allAddress}
-              myList={myList}
+              currentAccount={currentAccount}
               change={change}
             />
 
