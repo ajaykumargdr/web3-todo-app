@@ -92,6 +92,15 @@
     gap: 1rem;
     justify-content: space-between;
     margin-top: 1rem;
+    border-bottom: 1px solid #b3b8cd;
+}
+
+.home_create_list_app_creator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-top: 1rem;
     border-bottom: 1px solid #9a02ac;
 }
 
@@ -107,9 +116,8 @@
     font-size: 2rem;
 }
 
-.down {
-    border: 1px dotted #9a02ac;
-    padding: .1rem .5rem;
+.done {
+    color: #b3b8cd
 }
 
 .noData {
