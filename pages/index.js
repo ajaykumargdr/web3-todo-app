@@ -1,7 +1,6 @@
 import { MdVerified } from "react-icons/md";
-import React, { userState, useEffect, useContext, useState } from 'react';
-import { RiSendPlaneFill, RiCloseFill } from "react-icons/ri";
-import { TiRefreshOutline } from "react-icons/ti";
+import React, { useEffect, useContext, useState } from 'react';
+import { RiSendPlaneFill } from "react-icons/ri";
 import Image from 'next/image';
 
 import { ToDoListContext } from '@/context/ToDolistApp';
@@ -29,8 +28,9 @@ const Home = () => {
   // runs every time the below react code rerenders
   // any state change or page reload triggers the rerender
   useEffect(() => {
-    checkIfWalletIsConnect();
-    getToDoList();
+    checkIfWalletIsConnect().then((isConnected) => isConnected ?
+      getToDoList() : {}
+    );
   }, []);
 
   return (
@@ -62,7 +62,7 @@ const Home = () => {
 
           {/* ################# Showing List ################# */}
           <div>
-            <h2>ToDo History List <TiRefreshOutline onClick={() => getToDoList()} /> </h2>
+            <h2>ToDo History List</h2>
 
             {myList.map((el) => (
 
