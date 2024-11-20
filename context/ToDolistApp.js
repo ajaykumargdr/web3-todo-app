@@ -29,11 +29,14 @@ export const ToDoListProvider = ({ children }) => {
         }
         try {
 
-            const provider = new ethers.BrowserProvider(window.ethereum);
-            const signer = await provider.getSigner();
-            setCurrentAccount(signer.address);
-            return signer.address;
+            const accounts = await window.ethereum.request({ method: "eth_accounts" });
 
+            if (accounts.length) {
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                const signer = await provider.getSigner();
+                setCurrentAccount(signer.address);
+                return signer.address;
+            }
         } catch {
             setError("Please connect the app to metamask!");
             console.log("metamask is not connected!");
@@ -86,7 +89,7 @@ export const ToDoListProvider = ({ children }) => {
             const contract = await getContract();
             const transactionResponse = await contract.createList(message);
             transactionResponse.wait();  // TransactionResponse.wait() which waits until the block to be mined
-            getToDoList(currentAccount);
+            window.location.reload();
         } catch (error) {
             setError("something wrong with creating list: " + error);
         }
@@ -120,10 +123,8 @@ export const ToDoListProvider = ({ children }) => {
     const change = async (address, messageIndex) => {
         try {
             const contract = await getContract();
-            console.log("toggling:", address, messageIndex);
             const state = await contract.toggle(address, messageIndex);
             state.wait();
-            console.log(state)
             window.location.reload();
 
         } catch (error) {
