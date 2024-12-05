@@ -1,40 +1,124 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Web3 Todo List App
 
-## Getting Started
+## 📍 Acknowledgments
 
-First, run the development server:
+This Web3 Todo List app is an exact replication of the [repository](https://github.com/daulathussain/complete-ToDo-App/tree/main) by [@daulathussain](https://github.com/daulathussain), meticulously developed by following the comprehensive video tutorial from [theblockchaincoders](https://www.theblockchaincoders.com/course/multi-signature-wallet-dapp).
+
+## 📖 Project Overview
+
+This decentralized Todo List application demonstrates the integration of blockchain technology with a modern web framework. Built as a learning project, it showcases smart contract development, frontend implementation, and Web3 wallet integration.
+
+## 🏗️ Table of Contents  
+
+1. [Features](#-features)  
+2. [Technologies](#-technologies)  
+3. [Installation & Setup](#-installation--setup)  
+   - [Prerequisites](#-prerequisites)  
+   - [Deploy the Contract and Configure the Project](#-deploy-the-contract-and-configure-the-project)  
+   - [Configure Hardhat](#-configure-hardhat)  
+   - [Running the Project](#-running-the-project)  
+4. [Application UI](#-application-ui)
+6. [Connect](#-connect)
+
+
+## 🌟 Features
+
+- **Decentralized Task Management**
+  - Create and manage Todo items on the Ethereum blockchain
+  - User-specific task ownership
+  - Transparent and immutable task tracking
+
+- **User-Centric Design**
+  - Multiple users can view all Todo items
+  - Task creators have exclusive rights to mark tasks as done/undone or remove it.
+  - Secure authentication via MetaMask
+
+## 🚀 Technologies
+
+| Category | Technologies |
+|----------|--------------|
+| Frontend | Next.js |
+| Smart Contract | Solidity, Hardhat |
+| Network | Ethereum (Sepolia Testnet) |
+| Wallet | MetaMask |
+
+## 📦 Installation & Setup 
+
+### 🛠 Prerequisites
+
+- Node.js (v18+)
+- npm
+- Hardhat
+- MetaMask Browser Extension
+- Blockchain Provider API Key (Infura/Alchemy)
+
+### 🚀 Deploy the Contract and Configure the Project
+
+1. Clone the repository:  
+    ```bash
+    git clone https://github.com/ajaykumargdr/eth-crypto-wallet.git
+    cd web3-todo-list
+    ```  
+
+2. Deploy the smart contract using Hardhat Ignition:  
+    ```bash
+    npx hardhat ignition deploy ./ignition/modules/ToDoList.js --network sepolia
+    ```  
+
+3. After deployment, copy the deployed contract address from the output:  
+    ![contract address](./readme-images/deploy.png)
+
+4. Update the `contract_address.json` file with your deployed contract address:  
+    ```json  
+    {
+        "address": "<YOUR_CONTRACT_ADDRESS>"
+    }  
+    ```  
+
+---
+
+### ⛑️ Configure Hardhat  
+
+To deploy the contract on your own network or using a different provider, update the `hardhat.config.js` file as shown:  
+
+```javascript  
+module.exports = {
+  solidity: "0.8.27",
+  defaultNetwork: "localhost",
+  networks: {
+    localhost: {
+      url: "http://127.0.0.1:8545",  // Connects to the Hardhat local node
+    },
+    sepolia: {
+      url: "<YOUR_PROVIDER_API_KEY>", // Add your provider's API key (Infura/Alchemy)
+      accounts: ["<YOUR_ACCOUNT_PRIVATE_KEY>"], // Add your private key
+    },
+  },
+};
+```
+
+> To deploy on the Ethereum mainnet, modify the networks section accordingly and use the --network mainnet flag:
+> ```bash
+> npx hardhat ignition deploy ./ignition/modules/ToDoList.js --network mainnet
+> ```
+
+### 🖥 Running the project
+Start the Development Server
+Install dependencies:
+
+```bash
+npm install
+```
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 🏠 Application UI
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+![ui](./readme-images/ui.png)
+---
+## 🔗 Connect
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+[LinkedIn](https://www.linkedin.com/in/ajaykumarm2003/) | [X](https://x.com/ajayKumarM0)
