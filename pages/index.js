@@ -13,16 +13,17 @@ const Home = () => {
   const [message, setMessage] = useState('');
 
   const {
-    checkIfWalletIsConnect, // function to check if wallet connected to wallet
-    connectWallet,  // function to connect wallet
-    getToDoList,  // function to get all messages to the state myList 
-    toDoList, // function to add todo message
-    change, // function to toggle the message to done/undone 
-    currentAccount, // state that stores address of current account
-    error,  // state that stores the error
-    allToDoList,  // 
-    myList, // state that stores all messages
-    allAddress  // state that stores all user addresses
+    checkIfWalletIsConnect,
+    connectWallet,
+    getToDoList,
+    toDoList,
+    change,
+    deleteMessage,
+    currentAccount,
+    error,
+    allToDoList,
+    myList,
+    allAddress
   } = useContext(ToDoListContext);
 
   // runs every time the below react code rerenders
@@ -31,8 +32,8 @@ const Home = () => {
     checkIfWalletIsConnect().then((currentAccount) => {
       currentAccount ?
         getToDoList(currentAccount) : {}
-    }
-    );
+    });
+    console.log("err: ", error);
   }, []);
 
   return (
@@ -108,6 +109,7 @@ const Home = () => {
               allToDoList={allToDoList}
               currentAccount={currentAccount}
               change={change}
+              deleteMessage={deleteMessage}
             />
 
           </div>

@@ -62,9 +62,28 @@ contract ToDoListApp {
         }
 
         bool state = singleUserData.completed[messageIndex];
-
         singleUserData.completed[messageIndex] = !state;
-
         emit Toggled(creator, singleUserData.messages[messageIndex], !state);
+    }
+
+    function deleteMessage(address creator, uint256 messageIndex) public {
+        if (creator != msg.sender) {
+            revert("sender is not the owner of message");
+        }
+
+        ToDoUser storage singleUserData = toDoUsers[creator];
+        uint256 len = singleUserData.messages.length;
+
+        if (messageIndex >= singleUserData.messages.length) {
+            revert("message index out of bound");
+        }
+
+        for (uint256 i = messageIndex; i < len-1; i++) {
+            singleUserData.messages[i] = singleUserData.messages[i + 1];
+            singleUserData.completed[i] = singleUserData.completed[i + 1];
+        }
+
+        singleUserData.messages.pop();
+        singleUserData.completed.pop();
     }
 }

@@ -132,6 +132,18 @@ export const ToDoListProvider = ({ children }) => {
         }
     }
 
+    const deleteMessage = async (address, messageIndex) => {
+        try {
+            const contract = await getContract();
+            const state = await contract.deleteMessage(address, messageIndex);
+            state.wait();
+            window.location.reload();
+
+        } catch (error) {
+            setError("something went wrong in deleting the message:" + error);
+        }
+    }
+
     return (
         <ToDoListContext.Provider value={{
             checkIfWalletIsConnect,
@@ -139,6 +151,7 @@ export const ToDoListProvider = ({ children }) => {
             getToDoList,
             toDoList,
             change,
+            deleteMessage,
             currentAccount,
             error,
             allToDoList,
