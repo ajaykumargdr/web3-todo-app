@@ -6,3 +6,47 @@
 
 # waffle
     * a library for writing and testing smart contracts
+
+# npm install --global hardhat-shorthand
+After doing this running hh will be equivalent to running npx hardhat. For example, instead of running npx hardhat compile you can run hh compile.
+
+https://www.quicknode.com/guides/ethereum-development/smart-contracts/how-to-interact-with-smart-contracts
+
+1. if message is not getting added try:
+    * removing rpc url from metamask localhost network and add back
+    * try using alternatives 127.0.0.1:8545 [OR] localhost:8545
+    
+2. following error
+: Error: could not coalesce error (error={ "code": -32603, "message": "Internal JSON-RPC error." }, payload={ "id": 6, "jsonrpc": "2.0", "method": "eth_sendTransaction", "params": [ { "data": "0xb8dcc68f000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000046164666700000000000000000000000000000000000000000000000000000000", "from": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266", "gas": "0x5411", "to": "0x5fbdb2315678afecb367f032d93f642f64180aa3" } ] }, code=UNKNOWN_ERROR, version=6.13.4)
+
+    can be something meaning contract not exists
+
+3.  ** Bad Data error
+    * something like contract is not in the network
+    * use - following hardhat config if you are gonna use localhost
+        module.exports = {
+        solidity: "0.8.27",
+        defaultNetwork: "localhost",
+        networks: {
+            localhost: {
+            url: "http://127.0.0.1:8545",  // This connects to the Hardhat node
+            },
+        },
+        };
+    * deploy - hh ignition deploy ./ignition/modules/ToDoList.js --network localhost
+    * use - hh console --network localhost - to check the functions:
+        * const contract = await ethers.getContractAt("ToDoList", "0x5fbdb2315678afecb367f032d93f642f64180aa3");
+        * console.log(await contract.getMessage());
+    
+* The node doesn't store the state. Every time you stop and start the node again - it is in the initial state. That's why it's important to have some scripts to set your initial node state, that is, get it in the wanted state before you do any further testing.
+
+* to kill a running node:
+    * lsof -i tcp:8545
+    * kill -9 8545 
+
+
+* Do note that Metamask stores a nonce connected to the imported accounts hence if the local network is constantly restarted, you will need to enable the “Customize transaction nonce” option.
+* so the "missing revert data" OR the wrong nonce tag issue should solve if I do "Clear application data"
+    * restarted the system fixed
+    * it seems metamask has some cache
+    * try closing browser and opening again
