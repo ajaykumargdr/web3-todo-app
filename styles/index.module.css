@@ -104,11 +104,9 @@
     border-bottom: 1px solid #9a02ac;
 }
 
-.lock_color {
-    background-color: #9a02ac;
-    border-radius: .2rem;
-    cursor: pointer;
-    color: #fff
+.message_list{
+    display: flex;
+    gap: 0.5rem;
 }
 
 .iconClose {
