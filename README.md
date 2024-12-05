@@ -56,7 +56,7 @@ This decentralized Todo List application demonstrates the integration of blockch
 
 1. Clone the repository:  
     ```bash
-    git clone https://github.com/ajaykumargdr/eth-crypto-wallet.git
+    git clone https://github.com/ajaykumargdr/web3-todo-app
     cd web3-todo-list
     ```  
 
